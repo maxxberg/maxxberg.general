@@ -1,0 +1,28 @@
+---
+- name: Prepare backup folder list
+  set_fact:
+    backup_dirs: "{{ ['/root/mc/' + mc_backup_project + '/data/world'] }}"
+- name: Prepare backup folder list
+  set_fact:
+    backup_dirs: "{{ backup_dirs + ['/root/mc/' + mc_backup_project + '/data/'+backup_folder_loop_var] }}"
+  loop: "{{ mc_backup_additional_folders }}"
+  loop_control:
+    loop_var: backup_folder_loop_var
+  when: mc_backup_additional_folders is defined
+
+
+- name: Pack world
+  community.general.archive:
+    dest: /root/data.tar.gz
+    path: "{{ backup_dirs }}"
+# - name: Pack world
+#   community.general.archive:
+#     dest: /root/world.tar.gz
+#     path: "{{ ['/root/mc/{{mc_project}}/data/world'] + mc_backup_additional_folders }}"
+
+- name: Upload world
+  shell:  sshpass -p "{{ storagebox_password }}" rsync -e 'ssh -p23 -o StrictHostKeyChecking=no' -av /root/data.tar.gz {{ storagebox_host }}:{{mc_backup_project}}/
+
+- name: Upload world
+  shell:  sshpass -p "{{ storagebox_password }}" rsync -e 'ssh -p23 -o StrictHostKeyChecking=no' -av /root/data.tar.gz "{{ storagebox_host }}:{{mc_backup_project}}/data-$(date +%Y-%m-%d_%H-%M-%S).tar.gz"
+
