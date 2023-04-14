@@ -11,11 +11,13 @@
     ssh_keys:
       "{{ ssh_keys }}"
   register: hc
+  delegate_to: localhost
 
 - name: Check for successfull server creation
   ansible.builtin.fail:
     msg: "Could not retrieve an ip address for the server"
   when: hc.hcloud_server is none and state == 'present'
+  delegate_to: localhost
 
 - name: Wait for system to become reachable
   ansible.builtin.wait_for:
@@ -24,6 +26,7 @@
     state: started
     timeout: 300
   when: state == 'present'
+  delegate_to: localhost
 
 - name: Set DNS
   community.dns.hetzner_dns_record_set:
@@ -33,12 +36,14 @@
     prefix: "{{ server_name }}"
     value: "{{ hc.hcloud_server.ipv4_address }}"
     hetzner_token: "{{ dns.dns_api_key }}"
+  delegate_to: localhost
 
 - name: Remove old host-keys
   ansible.builtin.shell: ssh-keygen -R {{ (server_name + '.' + dns.domain) | quote }} ; ssh-keygen -R {{ hc.hcloud_server.ipv4_address | quote }}
   register: shell_output
   changed_when: shell_output.rc == 0
   ignore_errors: true
+  delegate_to: localhost
 
 - name: Add ssh host-key
   ansible.builtin.shell: ssh-keyscan -H {{ hc.hcloud_server.ipv4_address | quote }} >> ~/.ssh/known_hosts
@@ -46,6 +51,7 @@
   changed_when: shell_output.rc == 0
   ignore_errors: true
   when: state == 'present'
+  delegate_to: localhost
 
 # - name: add ssh host-key
 #   shell: ssh-keyscan -H {{ (server_name + '.' + dns.domain) | quote }} >> ~/.ssh/known_hosts
@@ -57,3 +63,4 @@
     name: "{{ server_name + '.' + dns.domain }}"
     ansible_host: "{{ hc.hcloud_server.ipv4_address }}"
   when: state == 'present'
+  delegate_to: localhost
