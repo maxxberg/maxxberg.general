@@ -33,7 +33,7 @@
     state: "{{ state }}"
     zone: "{{ zone }}"
     type: A
-    prefix: "{{ server_name }}"
+    prefix: "{{ prefix }}"
     value: "{{ hc.hcloud_server.ipv4_address }}"
     hetzner_token: "{{ dns_api_key }}"
   delegate_to: localhost
@@ -60,7 +60,7 @@
 
 - name: Set ip to hostvars
   ansible.builtin.add_host:
-    name: "{{ server_name + '.' + domain }}"
+    name: "{{ dns_prefix + '.' + dns_zone }}"
     ansible_host: "{{ hc.hcloud_server.ipv4_address }}"
   when: state == 'present'
   delegate_to: localhost
