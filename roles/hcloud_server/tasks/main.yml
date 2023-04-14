@@ -60,7 +60,7 @@
 
 - name: Set ip to hostvars
   ansible.builtin.add_host:
-    name: "{{ dns_prefix + '.' + dns_zone }}"
+    name: "{{ prefix + '.' + zone }}"
     ansible_host: "{{ hc.hcloud_server.ipv4_address }}"
   when: state == 'present'
   delegate_to: localhost
