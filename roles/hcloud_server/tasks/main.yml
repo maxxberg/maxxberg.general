@@ -39,7 +39,7 @@
   delegate_to: localhost
 
 - name: Remove old host-keys
-  ansible.builtin.shell: ssh-keygen -R {{ (server_name + '.' + domain) | quote }} ; ssh-keygen -R {{ hc.hcloud_server.ipv4_address | quote }}
+  ansible.builtin.shell: ssh-keygen -R {{ (prefix + '.' + zone) | quote }} ; ssh-keygen -R {{ hc.hcloud_server.ipv4_address | quote }}
   register: shell_output
   changed_when: shell_output.rc == 0
   ignore_errors: true
