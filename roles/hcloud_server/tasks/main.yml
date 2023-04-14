@@ -31,7 +31,7 @@
 - name: Set DNS
   community.dns.hetzner_dns_record_set:
     state: "{{ state }}"
-    zone: "{{ domain }}"
+    zone: "{{ zone }}"
     type: A
     prefix: "{{ server_name }}"
     value: "{{ hc.hcloud_server.ipv4_address }}"
