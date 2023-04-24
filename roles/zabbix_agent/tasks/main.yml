@@ -1,2 +1,11 @@
 ---
 # tasks file for zabbix-agent
+# https://github.com/ansible-collections/community.zabbix/blob/main/docs/ZABBIX_AGENT_ROLE.md
+- name: Install zabbix agent
+  ansible.builtin.include_role:
+    name: community.zabbix.zabbix_agent
+  vars:
+    zabbix_agent_version: "6.4"
+    zabbix_agent2: true
+    zabbix_agent_listenip: 0.0.0.0/0
+    zabbix_agent_hostname: "{{ hostname }}"
