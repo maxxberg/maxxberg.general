@@ -8,6 +8,7 @@
     zabbix_agent_version: "6.4"
     zabbix_agent2: true
     zabbix_agent2_tlsaccept: "{{ tls_accept | default('psk') }}"
+    zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
     zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
     zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
     # zabbix_agent_listenip: "0.0.0.0"
