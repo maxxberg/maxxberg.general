@@ -14,6 +14,7 @@
     zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
     zabbix_api_server_host: "{{ zabbix_host }}"
     zabbix_api_server_port: "{{ zabbix_port | default('443') }}"
+    ansible_zabbix_url_path: "/"
     zabbix_api_use_ssl: "{{ use_ssl | default(true) }}"
     zabbix_api_validate_certs: "{{ validate_certs | default(true) }}"
     zabbix_api_login_user: "{{ api_user | default() }}"
