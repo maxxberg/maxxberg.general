@@ -21,5 +21,6 @@
     zabbix_useuip: "{{ use_ip }}"
     zabbix_api_create_hosts: "{{ create_hosts }}"
     zabbix_host_groups: "{{ host_groups }}"
+    zabbix_agent_link_templates: "{{ templates }}"
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
