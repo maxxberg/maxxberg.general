@@ -7,5 +7,5 @@
   vars:
     zabbix_agent_version: "6.4"
     zabbix_agent2: true
-    zabbix_agent_listenip: "0.0.0.0"
-    zabbix_agent_hostname: "{{ hostname }}"
+    # zabbix_agent_listenip: "0.0.0.0"
+    # zabbix_agent_hostname: "{{ hostname }}"
