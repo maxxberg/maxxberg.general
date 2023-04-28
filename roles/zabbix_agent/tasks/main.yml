@@ -61,10 +61,6 @@
 - name: Configure host on Server
   community.zabbix.zabbix_host:
     host_name: "{{ ansible_hostname }}"
-    # server_url: "{{ zabbix_url }}"
-    # validate_certs: "{{ validate_certs | default(true) }}"
-    # http_login_user: "{{ api_user | default() }}"
-    # http_login_password: "{{ api_password }}"
     interfaces:
       - type: "agent"
         useip: "{{ use_ip }}"
