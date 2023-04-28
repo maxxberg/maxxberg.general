@@ -21,8 +21,8 @@
     host_name: "{{ ansible_hostname }}"
     server_url: "{{ zabbix_url }}"
     validate_certs: "{{ validate_certs | default(true) }}"
-    login_user: "{{ api_user | default() }}"
-    login_password: "{{ api_password }}"
+    http_login_user: "{{ api_user | default() }}"
+    http_login_password: "{{ api_password }}"
     interfaces:
       - type: "agent"
         useip: "{{ use_ip }}"
