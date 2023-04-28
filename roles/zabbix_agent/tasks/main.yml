@@ -43,6 +43,7 @@
   ansible.builtin.add_host:
     name: zabbix_httpapi_host
     ansible_host: "{{ server_host }}"
+    zabbix_api_server_url: "https://{{ server_host }}/"
     ansible_network_os: community.zabbix.zabbix
     ansible_connection: httpapi
     ansible_httpapi_port: 443
