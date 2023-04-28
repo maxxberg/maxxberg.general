@@ -29,7 +29,7 @@
         ip: "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"
         dns: "{{ hostname }}"
         main: "1"
-    tls_connect: "{{ tls_accept | default('psk') }}"
+    tls_connect: "{{ tls_accept | default(2) }}" # 1 (no encryption), 2 (PSK), 4 (certificate)
     tls_psk_identity: "{{ tls_identity }}"
     tls_psk: "{{ tls_psk }}"
     host_groups: "{{ host_groups }}"
