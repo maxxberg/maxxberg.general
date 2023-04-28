@@ -58,6 +58,7 @@
     host_groups: "{{ host_groups }}"
     link_templates: "{{ templates }}"
   when: create_hosts
+  delegate_to: localhost
   vars:
     ansible_host: "{{ server_host }}"
     ansible_network_os: community.zabbix.zabbix
