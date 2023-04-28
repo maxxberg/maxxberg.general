@@ -45,7 +45,7 @@
     ansible_host: "{{ server_host }}"
     ansible_network_os: community.zabbix.zabbix
     ansible_connection: httpapi
-    ansible_httpapi_port: 443
+    #ansible_httpapi_port: 443
     ansible_httpapi_use_ssl: true
     ansible_httpapi_validate_certs: true
     ansible_zabbix_auth_key: "{{ auth_token }}"
