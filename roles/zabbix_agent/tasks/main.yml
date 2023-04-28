@@ -36,8 +36,10 @@
     zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
     zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
     zabbix_agent_firewalld_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
-    zabbix_agent2_listenport: 10050
-    zabbix_agent_firewalld_enable: true
+    zabbix_agent2_listenport: "{{ listen_port | default(10050) }}"
+    zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
+    zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
+    zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
 
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
