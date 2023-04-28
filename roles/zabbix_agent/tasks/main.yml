@@ -1,6 +1,29 @@
 ---
 # tasks file for zabbix-agent
 # https://github.com/ansible-collections/community.zabbix/blob/main/docs/ZABBIX_AGENT_ROLE.md
+
+# Set following variables for Zabbix Server host in play or inventory
+# - name: Set connection specific variables
+#   ansible.builtin.set_fact:
+#     ansible_network_os: community.zabbix.zabbix
+#     ansible_connection: httpapi
+#     ansible_httpapi_port: 80
+#     ansible_httpapi_use_ssl: false
+#     ansible_httpapi_validate_certs: false
+    # ansible_zabbix_url_path: 'zabbixeu'  # If Zabbix WebUI runs on non-default (zabbix) path ,e.g. http://<FQDN>/zabbixeu
+
+# If you want to use Username and Password to be authenticated by Zabbix Server
+# - name: Set credentials to access Zabbix Server API
+#   set_fact:
+#     ansible_user: Admin
+#     ansible_httpapi_pass: zabbix
+
+# If you want to use API token to be authenticated by Zabbix Server
+# https://www.zabbix.com/documentation/current/en/manual/web_interface/frontend_sections/administration/general#api-tokens
+# - name: Set API token
+#   set_fact:
+#     ansible_zabbix_auth_key: "{{ auth_token }}"
+
 - name: Install zabbix agent
   ansible.builtin.include_role:
     name: community.zabbix.zabbix_agent
@@ -19,10 +42,10 @@
 - name: Configure host on Server
   community.zabbix.zabbix_host:
     host_name: "{{ ansible_hostname }}"
-    server_url: "{{ zabbix_url }}"
-    validate_certs: "{{ validate_certs | default(true) }}"
-    http_login_user: "{{ api_user | default() }}"
-    http_login_password: "{{ api_password }}"
+    # server_url: "{{ zabbix_url }}"
+    # validate_certs: "{{ validate_certs | default(true) }}"
+    # http_login_user: "{{ api_user | default() }}"
+    # http_login_password: "{{ api_password }}"
     interfaces:
       - type: "agent"
         useip: "{{ use_ip }}"
@@ -35,4 +58,11 @@
     host_groups: "{{ host_groups }}"
     link_templates: "{{ templates }}"
   when: create_hosts
-  delegate_to: localhost
+  vars:
+    ansible_host: "{{ server_host }}"
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_httpapi_port: 443
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: true
+    ansible_zabbix_auth_key: "{{ auth_token }}"
