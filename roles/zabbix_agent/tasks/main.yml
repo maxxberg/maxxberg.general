@@ -12,16 +12,27 @@
     zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
     zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
     zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
-    zabbix_api_server_host: "{{ zabbix_host }}"
-    zabbix_api_server_port: "{{ zabbix_port | default('443') }}"
-    ansible_zabbix_url_path: "/"
-    zabbix_api_use_ssl: "{{ use_ssl | default(true) }}"
-    zabbix_api_validate_certs: "{{ validate_certs | default(true) }}"
-    zabbix_api_http_user: "{{ api_user | default() }}"
-    zabbix_api_http_password: "{{ api_password }}"
-    zabbix_useuip: "{{ use_ip }}"
-    zabbix_api_create_hosts: "{{ create_hosts }}"
-    zabbix_host_groups: "{{ host_groups }}"
-    zabbix_agent_link_templates: "{{ templates }}"
+
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
+
+- name: Configure host on Server
+  community.zabbix.zabbix_host:
+    host_name: "{{ ansible_hostname }}"
+    server_url: "{{ zabbix_url }}"
+    validate_certs: "{{ validate_certs | default(true) }}"
+    login_user: "{{ api_user | default() }}"
+    login_password: "{{ api_password }}"
+    interfaces:
+      - type: "agent"
+        useip: "{{ use_ip }}"
+        ip: "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"
+        dns: "{{ hostname }}"
+        main: "1"
+    tls_connect: "{{ tls_accept | default('psk') }}"
+    tls_psk_identity: "{{ tls_identity }}"
+    tls_psk: "{{ tls_psk }}"
+    host_groups: "{{ host_groups }}"
+    link_templates: "{{ templates }}"
+  when: create_hosts
+  delegate_to: localhost
