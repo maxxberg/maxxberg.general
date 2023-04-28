@@ -39,6 +39,18 @@
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
 
+- name: Add temporary inventory host
+  ansible.builtin.add_host:
+    name: zabbix_httpapi_host
+    ansible_host: "{{ server_host }}"
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_httpapi_port: 443
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: true
+    ansible_zabbix_auth_key: "{{ auth_token }}"
+
+
 - name: Configure host on Server
   community.zabbix.zabbix_host:
     host_name: "{{ ansible_hostname }}"
@@ -58,12 +70,4 @@
     host_groups: "{{ host_groups }}"
     link_templates: "{{ templates }}"
   when: create_hosts
-  delegate_to: localhost
-  vars:
-    ansible_host: "{{ server_host }}"
-    ansible_network_os: community.zabbix.zabbix
-    ansible_connection: httpapi
-    ansible_httpapi_port: 443
-    ansible_httpapi_use_ssl: true
-    ansible_httpapi_validate_certs: true
-    ansible_zabbix_auth_key: "{{ auth_token }}"
+  delegate_to: zabbix_httpapi_host
