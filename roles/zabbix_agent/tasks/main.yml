@@ -65,7 +65,7 @@
     zabbix_agent_userparameters:
       - name: "{{ item.name }}"
         scripts_dir: "{{ item.dir }}"
-  loop: agent_userparameters
+  loop: "{{ agent_userparameters }}"
 
 
 - name: Configure host on Server
