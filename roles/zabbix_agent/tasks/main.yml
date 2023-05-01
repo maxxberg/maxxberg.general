@@ -40,6 +40,7 @@
     zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
     zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
     zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent_userparameters: "{{ agent_userparameters }}"
 
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"

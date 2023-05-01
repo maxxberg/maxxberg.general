@@ -4,15 +4,3 @@
     user: zabbix
     nopassword: true
     commands: /etc/zabbix/scripts/wireguard/get-iptables.sh
-
-- name: Deploy userparameter
-  ansible.builtin.include_role:
-    name: community.zabbix.zabbix_agent
-  vars:
-    zabbix_agent2: true
-    zabbix_agent_userparameters:
-      - name: wireguard_iptables
-        scripts_dir: wireguard
-    apply:
-      tags:
-        - userparameter
