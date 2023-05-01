@@ -1,3 +1,10 @@
+- name: Sudoers - Allow script
+  community.general.sudoers:
+    name: zabbix_wireguard_iptables
+    user: zabbix
+    nopassword: true
+    commands: ALL
+
 - name: Deploy userparameter
   ansible.builtin.include_role:
     name: community.zabbix.zabbix_agent
