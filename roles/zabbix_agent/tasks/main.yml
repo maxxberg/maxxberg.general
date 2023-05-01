@@ -62,13 +62,12 @@
   ansible.builtin.include_role:
     name: "{{ role_name }}"
     tasks_from: "userparameters_{{ userparameter_item.name }}.yml"
+    apply:
+      tags:
+        - userparameter
   loop: "{{ agent_userparameters }}"
   loop_control:
     loop_var: userparameter_item
-  apply:
-    tags:
-      - userparameter
-
 
 - name: Configure host on Server
   community.zabbix.zabbix_host:
