@@ -61,8 +61,10 @@
 - name: Deploy userparameter
   ansible.builtin.include_role:
     name: "{{ role_name }}"
-    tasks_from: "userparameters_{{ item.name }}.yml"
+    tasks_from: "userparameters_{{ userparameter_item.name }}.yml"
   loop: "{{ agent_userparameters }}"
+  loop_control:
+    loop_var: userparameter_item
 
 
 - name: Configure host on Server
