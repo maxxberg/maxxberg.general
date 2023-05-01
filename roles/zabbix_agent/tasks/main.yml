@@ -65,6 +65,9 @@
   loop: "{{ agent_userparameters }}"
   loop_control:
     loop_var: userparameter_item
+  apply:
+    tags:
+      - userparameter
 
 
 - name: Configure host on Server
