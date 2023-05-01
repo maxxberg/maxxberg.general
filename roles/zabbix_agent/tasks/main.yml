@@ -59,7 +59,7 @@
 
 
 - name: Deploy userparameter
-  ansible.builtin.include_tasks:
+  ansible.builtin.import_tasks:
     file: "./userparameters_{{ item.name }}.yml"
   loop: "{{ agent_userparameters }}"
 
