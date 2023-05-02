@@ -1,0 +1,85 @@
+---
+# tasks file for zabbix-agent
+# https://github.com/ansible-collections/community.zabbix/blob/main/docs/ZABBIX_AGENT_ROLE.md
+
+# Set following variables for Zabbix Server host in play or inventory
+# - name: Set connection specific variables
+#   ansible.builtin.set_fact:
+#     ansible_network_os: community.zabbix.zabbix
+#     ansible_connection: httpapi
+#     ansible_httpapi_port: 80
+#     ansible_httpapi_use_ssl: false
+#     ansible_httpapi_validate_certs: false
+    # ansible_zabbix_url_path: 'zabbixeu'  # If Zabbix WebUI runs on non-default (zabbix) path ,e.g. http://<FQDN>/zabbixeu
+
+# If you want to use Username and Password to be authenticated by Zabbix Server
+# - name: Set credentials to access Zabbix Server API
+#   set_fact:
+#     ansible_user: Admin
+#     ansible_httpapi_pass: zabbix
+
+# If you want to use API token to be authenticated by Zabbix Server
+# https://www.zabbix.com/documentation/current/en/manual/web_interface/frontend_sections/administration/general#api-tokens
+# - name: Set API token
+#   set_fact:
+#     ansible_zabbix_auth_key: "{{ auth_token }}"
+
+- name: Install zabbix agent
+  ansible.builtin.include_role:
+    name: community.zabbix.zabbix_agent
+  vars:
+    zabbix_agent_version: "6.4"
+    zabbix_agent2: true
+    zabbix_agent2_server: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent2_tlsaccept: "{{ tls_accept | default('psk') }}"
+    zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
+    zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
+    zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
+    zabbix_agent_firewalld_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent2_listenport: "{{ listen_port | default(10050) }}"
+    zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
+    zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
+    zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent_userparameters: "{{ agent_userparameters }}"
+
+    # zabbix_agent_listenip: "0.0.0.0"
+    # zabbix_agent_hostname: "{{ hostname }}"
+
+- name: Add temporary inventory host
+  ansible.builtin.add_host:
+    name: zabbix_httpapi_host
+    ansible_host: "{{ server_host }}"
+    zabbix_api_server_url: "https://{{ server_host }}/"
+    ansible_zabbix_url_path: "/"
+    ansible_network_os: community.zabbix.zabbix
+    ansible_connection: httpapi
+    ansible_httpapi_port: 443
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: true
+    ansible_zabbix_auth_key: "{{ auth_token }}"
+
+
+- name: Deploy userparameter
+  ansible.builtin.include_role:
+    name: "{{ role_name }}"
+    tasks_from: "userparameters_{{ userparameter_item.name }}.yml"
+  loop: "{{ agent_userparameters }}"
+  loop_control:
+    loop_var: userparameter_item
+
+- name: Configure host on Server
+  community.zabbix.zabbix_host:
+    host_name: "{{ ansible_hostname }}"
+    interfaces:
+      - type: "agent"
+        useip: "{{ use_ip }}"
+        ip: "{{ ansible_default_ipv4.address | default(ansible_all_ipv4_addresses[0]) }}"
+        dns: "{{ hostname }}"
+        main: "1"
+    tls_connect: "{{ tls_accept | default(2) }}" # 1 (no encryption), 2 (PSK), 4 (certificate)
+    tls_psk_identity: "{{ tls_identity }}"
+    tls_psk: "{{ tls_psk }}"
+    host_groups: "{{ host_groups }}"
+    link_templates: "{{ templates }}"
+  when: create_hosts
+  delegate_to: zabbix_httpapi_host

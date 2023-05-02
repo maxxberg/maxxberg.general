@@ -1,0 +1,6 @@
+- name: Sudoers - Allow script
+  community.general.sudoers:
+    name: zabbix_wireguard_iptables
+    user: zabbix
+    nopassword: true
+    commands: /etc/zabbix/scripts/wireguard/get-iptables.sh
