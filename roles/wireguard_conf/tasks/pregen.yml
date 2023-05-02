@@ -1,0 +1,89 @@
+---
+
+- name: create public key list
+  set_fact:
+    public_keys: []
+  when: public_keys is not defined
+
+- name: Set config file path
+  set_fact:
+    config_file: "tmp/{{ client_name }}/{{ interface_name }}.conf"
+
+- name: Check if client exists
+  stat:
+    path:  "{{ config_file }}"
+  register: client_dir_stat
+
+- name: Get public key if already exists
+  set_fact:
+    private_key: "{{ lookup('ini', 'PrivateKey section=Interface file=' + config_file) }}"
+  when: client_dir_stat.stat.exists == True
+
+- name: Create private key
+  command: wg genkey
+  register: result
+  when: client_dir_stat.stat.exists == False
+
+- set_fact:
+    private_key: "{{ result.stdout }}"
+  when: client_dir_stat.stat.exists == False
+
+- name: Create public key
+  shell: echo "{{ private_key }}" | wg pubkey
+  register: result
+  #when: client_dir_stat.stat.exists == False
+
+- set_fact:
+    public_key: "{{ result.stdout }}"
+
+- name: create directory
+  file:
+    path: tmp/{{ client_name }}
+    state: directory
+
+- name: save private key
+  file:
+    path: tmp/{{ client_name }}/privkey
+    content: "{{ private_key }}"
+    mode: 600
+
+- name: add peer data
+  set_fact:
+    peer: "{{ peer | default({}) | combine({ peer_item.k : peer_item.v }) }}"
+  with_items:
+    - k: 'client_name'
+      v: "{{ client_name }}"
+    - k: 'public_key'
+      v: "{{ public_key }}"
+    - k: 'ip_address'
+      v:  "{{ wg_address+'/32' }}"
+    #- k: 'ip_address'
+    #  v: "{{ peer.ip_address + ', ' + wg_address6 + '/128' if wg_address6 is defined }}"
+    #- k: {'ip_address + ip_address'
+    #  v: "{% if wg_address6 is defined%}{{', ' + wg_address6 + '/128' }}{%endif%}"
+    #- k: 'ip_address'
+    #  v: "{{ peer.ip_address + ', '+ route_home if ip_address is defined }}"
+  loop_control:
+    loop_var: peer_item
+
+- name: add peer data
+  set_fact:
+    peer: "{{ peer | default({}) | combine({ peer_item.k : peer_item.v }) if peer_item.v is defined }}"
+  with_items:
+    - k: "{{'ip_address' if wg_address6 is defined}}"
+      v: "{{ peer.ip_address + ', ' + wg_address6 + '/128' if wg_address6 is defined }}"
+    - k: "{{ }}"
+  loop_control:
+    loop_var: peer_item
+
+- name: add peer data
+  set_fact:
+    peer: "{{ peer | combine({ 'ip_address' : peer.ip_address + ', ' + route_home }) }}"
+  when: route_home != ''
+  
+
+- name: save public key to list
+  set_fact:
+    public_keys: "{{ public_keys + [peer] }}"
+    #public_keys: |
+    #   "{{ public_keys + [ {'client_name': client_name, 'public_key':public_key, 'ip_address':ip_address} ]}}"

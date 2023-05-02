@@ -1,0 +1,13 @@
+---
+# tasks file for maxxberg.wireguard-conf
+
+- name: Print activity
+  ansible.builtin.debug:
+    var: activity
+- name: Run server tasks
+  ansible.builtin.include_tasks: server.yml
+  when: activity == 'server'
+
+- name: Run Client tasks
+  ansible.builtin.include_tasks: client.yml
+  when: activity == 'client'

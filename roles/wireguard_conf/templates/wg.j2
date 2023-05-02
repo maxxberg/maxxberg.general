@@ -1,0 +1,25 @@
+[Interface]
+Address = {{ wg_address }}/{{ wg_address_net_bits }}{{', '+ wg_address6 +'/'+ wg_address6_net_bits|string if wg_address6 is defined}}
+{% if wg_endpoint_port is defined %}
+ListenPort = {{ wg_endpoint_port }}
+{% endif %}
+PrivateKey = {{ wg_private_key }}
+{% if nameserver is defined %}
+{% if activity == 'client' %}
+DNS = {{ nameserver }}
+{% endif %}
+{% endif %}
+{% if activity == 'server' %}
+PostUp = /etc/wireguard/postup.sh
+PostDown = /etc/wireguard/postdown.sh
+{% endif %}
+
+{%for peer in peers %}
+[Peer] {%if peer.client_name is defined %} #{{ peer.client_name }}{% endif %}
+
+PublicKey = {{ peer.public_key }}
+AllowedIPs = {{ peer.allowed_ips }}
+{% if peer.endpoint is defined %}
+Endpoint = {{ peer.endpoint }}
+{% endif %}
+{% endfor %}
