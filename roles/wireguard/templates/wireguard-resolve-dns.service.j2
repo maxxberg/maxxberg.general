@@ -1,0 +1,6 @@
+[Unit]
+Description=Wireguard Re-Resolve DNS of endpoints
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/wireguard-reresolve-dns {{ wg_interface }}

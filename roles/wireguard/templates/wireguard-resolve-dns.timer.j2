@@ -1,0 +1,9 @@
+[Unit]
+Description=Runs Wireguard Re-Resolve DNS every 5 Minutes
+
+[Timer]
+OnUnitActiveSec=300s
+OnActiveSec=300s
+
+[Install]
+WantedBy=multi-user.target
