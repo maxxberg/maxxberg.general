@@ -1,7 +1,5 @@
 ---
 # handlers file for zabbix-agent
----
-# handlers file for zabbix-agent
 
 - name: restart zabbix-agent
   service:
