@@ -70,6 +70,18 @@
     state: directory
     mode: "755"
 
+- name: Install systemd service
+  ansible.builtin.copy:
+    src: zabbix_agent2.service
+    dest: /usr/lib/systemd/system/zabbix_agent2.service
+    mode: "644"
+
+- name: Enable zabbix_agent2.service
+  ansible.builtin.systemd:
+    name: zabbix_agent2.service
+    state: stopped
+    enabled: false
+    daemon_reload: true
 
 - name: Test
   ansible.builtin.include_tasks:
