@@ -70,19 +70,24 @@
     state: directory
     mode: "755"
 
-- name: Configure TLS PSK
-  ansible.builtin.include_tasks:
-    file: tlspsl_auto_agent2.yml
-    apply:
-      tags:
-        - config
-  when: tls_psk is defined
 
-- name: Render configuration
-  ansible.builtin.template:
-    src: zabbix_agent2.conf.j2
-    dest: /etc/zabbix/zabbix_agent2.conf
-    mode: "644"
+- name: Test
+  ansible.builtin.include_tasks:
+    file: Linux.yml
+
+# - name: Configure TLS PSK
+#   ansible.builtin.include_tasks:
+#     file: tlspsk_auto_agent2.yml
+#     apply:
+#       tags:
+#         - config
+#   when: tls_psk is defined
+
+# - name: Render configuration
+#   ansible.builtin.template:
+#     src: zabbix_agent2.conf.j2
+#     dest: /etc/zabbix/zabbix_agent2.conf
+#     mode: "644"
 
 - name: Create zabbix user
   ansible.builtin.user:
