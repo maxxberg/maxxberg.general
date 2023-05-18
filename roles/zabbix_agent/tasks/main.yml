@@ -62,7 +62,7 @@
   ansible.builtin.get_url:
     url: "{{ zabbix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
     dest: /usr/sbin/zabbix_agent2
-    mode: "644"
+    mode: "755"
 
 - name: Create directories
   ansible.builtin.file:
