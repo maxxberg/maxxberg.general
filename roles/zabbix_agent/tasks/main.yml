@@ -72,13 +72,13 @@
 
 - name: Install systemd service
   ansible.builtin.copy:
-    src: zabbix_agent2.service
+    src: zabbix-agent2.service
     dest: /usr/lib/systemd/system/zabbix_agent2.service
     mode: "644"
 
 - name: Enable zabbix_agent2.service
   ansible.builtin.systemd:
-    name: zabbix_agent2.service
+    name: zabbix-agent2.service
     state: stopped
     enabled: false
     daemon_reload: true
@@ -113,17 +113,12 @@
     shell: /sbin/nologin
     password_lock: true
 
-- name: Install systemd service
-  ansible.builtin.copy:
-    src: zabbix_agent2.service
-    dest: /usr/lib/systemd/system/zabbix_agent2.service
-    mode: "644"
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
 
 - name: Enable zabbix_agent2.service
   ansible.builtin.systemd:
-    name: zabbix_agent2.service
+    name: zabbix-agent2.service
     state: started
     enabled: true
     daemon_reload: true
