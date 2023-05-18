@@ -8,7 +8,7 @@ Environment="CONFFILE=/etc/zabbix/zabbix_agent2.conf"
 EnvironmentFile=-/etc/sysconfig/zabbix-agent2
 Type=simple
 Restart=on-failure
-PIDFile=/run/zabbix/zabbix_agent2.pid
+PIDFile=/var/run/zabbix/zabbix_agent2.pid
 KillMode=control-group
 ExecStart=/usr/sbin/zabbix_agent2 -c $CONFFILE
 ExecStop=/bin/kill -SIGTERM $MAINPID
