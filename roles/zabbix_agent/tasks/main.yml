@@ -58,6 +58,15 @@
     zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
     zabbix_agent_userparameters: "{{ agent_userparameters }}"
 
+- name: Create zabbix user
+  ansible.builtin.user:
+    name: zabbix
+    group: zabbix
+    comment: Zabbix Monitoring System
+    home: /var/lib/zabbix
+    shell: /sbin/nologin
+    password_lock: true
+
 - name: Install zabbix agent
   ansible.builtin.get_url:
     url: "{{ zabbix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
@@ -103,15 +112,6 @@
 #     src: zabbix_agent2.conf.j2
 #     dest: /etc/zabbix/zabbix_agent2.conf
 #     mode: "644"
-
-- name: Create zabbix user
-  ansible.builtin.user:
-    name: zabbix
-    group: zabbix
-    comment: Zabbix Monitoring System
-    home: /var/lib/zabbix
-    shell: /sbin/nologin
-    password_lock: true
 
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
