@@ -73,7 +73,7 @@
 - name: Install systemd service
   ansible.builtin.copy:
     src: zabbix-agent2.service
-    dest: /usr/lib/systemd/system/zabbix_agent2.service
+    dest: /usr/lib/systemd/system/zabbix-agent2.service
     mode: "644"
 
 - name: Enable zabbix_agent2.service
