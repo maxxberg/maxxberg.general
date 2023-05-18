@@ -42,6 +42,22 @@
 #     zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
 #     zabbix_agent_userparameters: "{{ agent_userparameters }}"
 
+- name: Set zabbix vars
+  ansible.builtin.set_fact:
+    zabbix_agent_version: "6.4"
+    zabbix_agent2: true
+    zabbix_agent2_server: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent2_tlsaccept: "{{ tls_accept | default('psk') }}"
+    zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
+    zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
+    zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
+    zabbix_agent_firewalld_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent2_listenport: "{{ listen_port | default(10050) }}"
+    zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
+    zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
+    zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+    zabbix_agent_userparameters: "{{ agent_userparameters }}"
+
 - name: Install zabbix agent
   ansible.builtin.get_url:
     url: "{{ zabix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
