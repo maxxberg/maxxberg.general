@@ -1,2 +1,5 @@
 ---
 # vars file for zabbix-agent
+archtiecture_mapping:
+  aarch64: arm64
+  x86_64: amd64

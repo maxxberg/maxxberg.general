@@ -24,26 +24,73 @@
 #   set_fact:
 #     ansible_zabbix_auth_key: "{{ auth_token }}"
 
-- name: Install zabbix agent
-  ansible.builtin.include_role:
-    name: community.zabbix.zabbix_agent
-  vars:
-    zabbix_agent_version: "6.4"
-    zabbix_agent2: true
-    zabbix_agent2_server: "{{ zabbix_server | default('0.0.0.0/0') }}"
-    zabbix_agent2_tlsaccept: "{{ tls_accept | default('psk') }}"
-    zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
-    zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
-    zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
-    zabbix_agent_firewalld_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
-    zabbix_agent2_listenport: "{{ listen_port | default(10050) }}"
-    zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
-    zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
-    zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
-    zabbix_agent_userparameters: "{{ agent_userparameters }}"
+# - name: Install zabbix agent
+#   ansible.builtin.include_role:
+#     name: community.zabbix.zabbix_agent
+#   vars:
+#     zabbix_agent_version: "6.4"
+#     zabbix_agent2: true
+#     zabbix_agent2_server: "{{ zabbix_server | default('0.0.0.0/0') }}"
+#     zabbix_agent2_tlsaccept: "{{ tls_accept | default('psk') }}"
+#     zabbix_agent2_tlspskfile: "/etc/zabbix/zabbix.psk"
+#     zabbix_agent2_tlspskidentity: "{{ tls_identity }}"
+#     zabbix_agent2_tlspsk_secret: "{{ tls_psk }}"
+#     zabbix_agent_firewalld_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+#     zabbix_agent2_listenport: "{{ listen_port | default(10050) }}"
+#     zabbix_agent_firewalld_enable: "{{ firewald_enable | default(false) }}"
+#     zabbix_agent_firewall_enable: "{{ iptables_enable | default(false) }}"
+#     zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
+#     zabbix_agent_userparameters: "{{ agent_userparameters }}"
 
+- name: Install zabbix agent
+  ansible.builtin.get_url:
+    url: "{{ zabix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
+    dest: /usr/local/bin/zabbix_agent2
+    mode: "644"
+
+- name: Create directories
+  ansible.builtin.file:
+    path: /etc/zabbix
+    state: directory
+    mode: "755"
+
+- name: Configure TLS PSK
+  ansible.builtin.include_tasks:
+    file: tlspsl_auto_agent2.yml
+    apply:
+      tags:
+        - config
+  when: tls_psk is defined
+
+- name: Render configuration
+  ansible.builtin.template:
+    src: zabbix_agent2.conf.j2
+    dest: /etc/zabbix/zabbix_agent2.conf
+    mode: "644"
+
+- name: Create zabbix user
+  ansible.builtin.user:
+    name: zabbix
+    group: zabbix
+    comment: Zabbix Monitoring System
+    home: /var/lib/zabbix
+    shell: /sbin/nologin
+    password_lock: true
+
+- name: Install systemd service
+  ansible.builtin.copy:
+    src: zabbix_agent2.service
+    dest: /usr/lib/systemd/system/zabbix_agent2.service
+    mode: "644"
     # zabbix_agent_listenip: "0.0.0.0"
     # zabbix_agent_hostname: "{{ hostname }}"
+
+- name: Enable zabbix_agent2.service
+  ansible.builtin.systemd:
+    name: zabbix_agent2.service
+    state: started
+    enabled: true
+    daemon_reload: true
 
 - name: Add temporary inventory host
   ansible.builtin.add_host:

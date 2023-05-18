@@ -1,3 +1,21 @@
+- name: Create scripts directory
+  ansible.builtin.file:
+    path: /etc/zabbix/zabbix_agent2.d
+    state: directory
+    mode: "755"
+
+- name: Upload scripts
+  ansible.builtin.copy:
+    src: "scripts/{{ userparameter_item.scripts_dir }}"
+    dest: "/etc/zabbix/script/{{ userparameter_item.scripts_dir }}"
+    mode: "755"
+
+- name: Upload userparameter
+  ansible.builtin.template:
+    src: "userparameters/{{ userparameter_item.name }}.j2"
+    dest: "/etc/zabbix/zabbix_agent2.d/{{ userparameter_item.name }}.conf"
+    mode: "644"
+
 - name: Sudoers - Allow script
   community.general.sudoers:
     name: zabbix_wireguard_iptables
