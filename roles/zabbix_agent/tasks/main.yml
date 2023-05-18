@@ -74,6 +74,9 @@
 - name: Test
   ansible.builtin.include_tasks:
     file: Linux.yml
+    apply:
+      tags:
+        - config
 
 # - name: Configure TLS PSK
 #   ansible.builtin.include_tasks:
