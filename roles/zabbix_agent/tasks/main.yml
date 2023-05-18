@@ -61,7 +61,7 @@
 - name: Install zabbix agent
   ansible.builtin.get_url:
     url: "{{ zabbix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
-    dest: /usr/local/bin/zabbix_agent2
+    dest: /usr/local/sbin/zabbix_agent2
     mode: "644"
 
 - name: Create directories
