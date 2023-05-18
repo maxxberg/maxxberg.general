@@ -60,7 +60,7 @@
 
 - name: Install zabbix agent
   ansible.builtin.get_url:
-    url: "{{ zabix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
+    url: "{{ zabbix_binary_url }}-{{ archtiecture_mapping[ansible_architecture] }}"
     dest: /usr/local/bin/zabbix_agent2
     mode: "644"
 
