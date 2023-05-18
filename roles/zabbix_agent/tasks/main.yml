@@ -58,6 +58,11 @@
     zabbix_agent_firewall_source: "{{ zabbix_server | default('0.0.0.0/0') }}"
     zabbix_agent_userparameters: "{{ agent_userparameters }}"
 
+- name: Create zabbix group
+  ansible.builtin.group:
+    name: zabbix
+    state: present
+
 - name: Create zabbix user
   ansible.builtin.user:
     name: zabbix
