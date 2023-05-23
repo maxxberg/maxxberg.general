@@ -6,6 +6,7 @@ After=network.target
 [Service]
 Environment="CONFFILE=/etc/zabbix/zabbix_agent2.conf"
 EnvironmentFile=-/etc/sysconfig/zabbix-agent2
+RuntimeDirectory=zabbix
 Type=simple
 Restart=on-failure
 PIDFile=/run/zabbix/zabbix_agent2.pid
