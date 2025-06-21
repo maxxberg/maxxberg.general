@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for fail2ban
+- name: Ensure fail2ban is installed
+  ansible.builtin.package:
+    name: fail2ban
+    state: installed
+
+- name: Enable service
+  ansible.builtin.systemd:
+    name: fail2ban
+    enabled: true
+    state: started
