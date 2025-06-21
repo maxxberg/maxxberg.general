@@ -17,6 +17,7 @@
       table inet spam_blocklist {
         set ip64-v4-blocklist {
           type ipv4_addr
+          flags interval
           elements = {
           {% for ip_range in ip64_blocklist %}
           {%- if ip_range %}
