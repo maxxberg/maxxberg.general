@@ -1,0 +1,26 @@
+[DEFAULT]
+# "bantime.increment" allows to use database for searching of previously banned ip's to increase a
+# default ban time using special formula, default it is banTime * 1, 2, 4, 8, 16, 32...
+bantime.increment = true
+
+# "bantime.rndtime" is the max number of seconds using for mixing with random time
+# to prevent "clever" botnets calculate exact time IP can be unbanned again:
+bantime.rndtime = 2048
+
+# following example can be used for small initial ban time (bantime=60) - it grows more aggressive at begin,
+# for bantime=60 the multipliers are minutes and equal: 5 min, 30 min, 1 hour, 5 hour, 12 hour, 1 day, 2 day
+bantime.multipliers = 1 5 30 60 300 720 1440 2880
+
+[traefik-general]
+# bots that trigger too many error codes like 404, 403 etc.
+enabled = true
+# ignore cloudflare cdn and private ip addresses
+ignoreip = 127.0.0.0/8 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16
+filter = traefik-general-forceful-browsing
+logpath = {{ fail2ban_traefik_logpath }}
+# this action bans every IP via DOCKER-USER chain. So the IP won't be able to access docker containers!
+# Note: This only works for containers that don't use the dockernet MACVLAN interface
+banaction = nftables[type=allports]
+maxretry = 15
+findtime = 60
+bantime = 600

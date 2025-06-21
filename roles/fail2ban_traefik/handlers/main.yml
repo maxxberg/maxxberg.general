@@ -1,0 +1,8 @@
+# SPDX-License-Identifier: MIT-0
+---
+# handlers file for fail2ban_traefik
+
+- name: Restart fail2ban
+  ansible.builtin.systemd:
+    name: fail2ban
+    state: restarted

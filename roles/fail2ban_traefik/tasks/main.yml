@@ -1,0 +1,17 @@
+# SPDX-License-Identifier: MIT-0
+---
+# tasks file for fail2ban_traefik
+
+- name: Write fail2ban filter
+  ansible.builtin.template:
+    dest: /etc/fail2ban/filter.d/traefik-general-forceful-browsing.conf
+    mode: "0644"
+    src: traefik-general-forceful-browsing.j2
+  notify: Restart fail2ban
+
+- name: Write fail2ban jail
+  ansible.builtin.template:
+    dest: /etc/fail2ban/jail.d/traefik.local
+    mode: "0644"
+    src: traefik.j2
+  notify: Restart fail2ban
