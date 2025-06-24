@@ -2,6 +2,12 @@
 ---
 # tasks file for ipv64_blocklist
 
+- name: Create nftbles directory
+  ansible.builtin.file:
+    path: /etc/nftables/
+    mode: "0755"
+    state: directory
+## https://github.com/bitwire-it/ipblocklist
 - name: Get blocklist
   ansible.builtin.set_fact:
     ip64_blocklist: "{{ lookup('ansible.builtin.url', 'https://ipv64.net/blocklists/ipv64_blocklist_v4_all.txt', split_lines=False) | split('\n') }}"
@@ -32,7 +38,7 @@
         }
 
         chain PREROUTING {
-          type filter hook prerouting priority filter; policy accept;
+          type filter hook prerouting priority filter -50; policy accept;
           tcp dport { 22, 80, 443 } ip saddr @ip64-v4-blocklist counter reject with icmp type host-unreachable
         }
       }
