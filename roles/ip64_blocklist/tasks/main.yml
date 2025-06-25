@@ -39,6 +39,6 @@
 
         chain PREROUTING {
           type filter hook prerouting priority filter -50; policy accept;
-          tcp dport { 22, 80, 443 } ip saddr @ip64-v4-blocklist counter reject with icmp type host-unreachable
+          ip saddr @ip64-v4-blocklist counter reject with icmp type host-unreachable
         }
       }
